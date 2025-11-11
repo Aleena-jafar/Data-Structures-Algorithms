@@ -1,0 +1,335 @@
+Task 1:
+#include <iostream>
+using namespace std;
+
+class Applicant {
+public:
+    int id;
+    float height, weight;
+    float eyesight;
+    string status;
+    Applicant* next;
+    Applicant* prev;
+};
+
+class Queue {
+private:
+    Applicant* front;
+    Applicant* rear;
+
+public:
+    Queue() {
+        front = rear = NULL;
+    }
+
+    bool isEmpty() {
+        return front == NULL;
+    }
+
+    // Enqueue: add new applicant at the end
+    void enqueue(int id, float h, float w, float eye, string status) {
+        Applicant* newApp = new Applicant();
+        newApp->id = id;
+        newApp->height = h;
+        newApp->weight = w;
+        newApp->eyesight = eye;
+        newApp->status = status;
+        newApp->next = NULL;
+        newApp->prev = NULL;
+
+        if (isEmpty()) {
+            front = rear = newApp;
+        } else {
+            rear->next = newApp;
+            newApp->prev = rear;
+            rear = newApp;
+        }
+
+        cout << "Applicant " << id << " added to the queue.\n";
+    }
+
+    // Dequeue: remove applicant from front (after test)
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "No applicant in queue!\n";
+            return;
+        }
+
+        Applicant* temp = front;
+        cout << "Applicant " << temp->id << " has given the test and left the line.\n";
+
+        front = front->next;
+        if (front != NULL)
+            front->prev = NULL;
+        else
+            rear = NULL; // queue became empty
+
+        delete temp;
+    }
+
+    // Remove applicant at 2nd position
+    void removeSecondApplicant() {
+        if (front == NULL || front->next == NULL) {
+            cout << "Less than two applicants in queue — cannot remove 2nd.\n";
+            return;
+        }
+
+        Applicant* second = front->next;
+        cout << "Applicant " << second->id << " had urgency and left the line.\n";
+
+        front->next = second->next;
+        if (second->next != NULL)
+            second->next->prev = front;
+        else
+            rear = front; // if 2nd was the last applicant
+
+        delete second;
+    }
+
+    void displayQueue() {
+        if (isEmpty()) {
+            cout << "Queue is empty!\n";
+            return;
+        }
+
+        cout << "\nCurrent Queue:\n";
+        Applicant* temp = front;
+        while (temp != NULL) {
+            cout << "ID: " << temp->id
+                 << ", Height: " << temp->height
+                 << ", Weight: " << temp->weight
+                 << ", Eyesight: " << temp->eyesight
+                 << ", Status: " << temp->status << endl;
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    Queue q;
+
+    cout << "=== Adding 7 Applicants to Queue ===\n";
+    q.enqueue(1, 5.6, 60, 6.5, "Waiting");
+    q.enqueue(2, 5.8, 70, 6.0, "Waiting");
+    q.enqueue(3, 6.0, 75, 6.2, "Waiting");
+    q.enqueue(4, 5.7, 65, 6.4, "Waiting");
+    q.enqueue(5, 5.9, 68, 6.1, "Waiting");
+    q.enqueue(6, 5.5, 55, 6.3, "Waiting");
+    q.enqueue(7, 6.1, 80, 6.0, "Waiting");
+
+    q.displayQueue();
+
+    cout << "\n--- The applicant at 2nd position leaves due to urgency ---\n";
+    q.removeSecondApplicant();
+    q.displayQueue();
+
+    cout << "\n--- First applicant gives the test and leaves ---\n";
+    q.dequeue();
+    q.displayQueue();
+
+    cout << "\n--- New applicant joins the line ---\n";
+    q.enqueue(8, 5.8, 62, 6.4, "Waiting");
+    q.displayQueue();
+
+    return 0;
+}
+Task 2:
+#include <iostream>
+using namespace std;
+
+// Node for Linked List
+struct Node {
+    int truck_id;
+    Node* next;
+};
+
+
+class Queue {
+private:
+    Node* front;
+    Node* rear;
+
+public:
+    Queue() {
+        front = rear = NULL;
+    }
+
+    bool isEmpty() {
+        return (front == NULL);
+    }
+
+    // Enqueue (add to end)
+    void enqueue(int id) {
+        Node* newNode = new Node;
+        newNode->truck_id = id;
+        newNode->next = NULL;
+
+        if (isEmpty()) {
+            front = rear = newNode;
+        } else {
+            rear->next = newNode;
+            rear = newNode;
+        }
+        cout << "Truck " << id << " arrived on the road.\n";
+    }
+
+    // Dequeue (remove from front)
+    int dequeue() {
+        if (isEmpty()) {
+            cout << "No trucks on road!\n";
+            return -1;
+        }
+        int id = front->truck_id;
+        Node* temp = front;
+        front = front->next;
+        delete temp;
+
+        if (front == NULL) rear = NULL;
+        return id;
+    }
+
+    // Display all trucks
+    void display() {
+        if (isEmpty()) {
+            cout << "No trucks on road.\n";
+            return;
+        }
+        cout << "Trucks on the road (front → rear): ";
+        Node* temp = front;
+        while (temp != NULL) {
+            cout << temp->truck_id << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+
+class Stack {
+private:
+    Node* top;
+
+public:
+    Stack() {
+        top = NULL;
+    }
+
+    bool isEmpty() {
+        return (top == NULL);
+    }
+
+    // Push (add on top)
+    void push(int id) {
+        Node* newNode = new Node;
+        newNode->truck_id = id;
+        newNode->next = top;
+        top = newNode;
+        cout << "Truck " << id << " entered the garage.\n";
+    }
+
+    // Pop (remove top)
+    int pop() {
+        if (isEmpty()) {
+            cout << "Garage is empty!\n";
+            return -1;
+        }
+        int id = top->truck_id;
+        Node* temp = top;
+        top = top->next;
+        delete temp;
+        return id;
+    }
+
+    // Peek (top element)
+    int peek() {
+        if (isEmpty()) return -1;
+        return top->truck_id;
+    }
+
+    // Display all trucks
+    void display() {
+        if (isEmpty()) {
+            cout << "Garage is empty.\n";
+            return;
+        }
+        cout << "Trucks in garage (bottom → top): ";
+        // Print in reverse order (bottom to top)
+        displayReverse(top);
+        cout << endl;
+    }
+
+    void displayReverse(Node* node) {
+        if (node == NULL) return;
+        displayReverse(node->next);
+        cout << node->truck_id << " ";
+    }
+};
+
+int main() {
+    Queue road;
+    Stack garage;
+    int choice, id;
+
+    do {
+        cout << "\n=== GARAGE MENU ===\n";
+        cout << "1. On_road(truck_id)\n";
+        cout << "2. Enter_garage()\n";
+        cout << "3. Exit_garage(truck_id)\n";
+        cout << "4. Show_trucks(garage or road)\n";
+        cout << "5. Exit Program\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        switch (choice) {
+        case 1:
+            cout << "Enter Truck ID: ";
+            cin >> id;
+            road.enqueue(id);
+            break;
+
+        case 2: {
+            int enteringTruck = road.dequeue();
+            if (enteringTruck != -1)
+                garage.push(enteringTruck);
+            break;
+        }
+
+        case 3:
+            cout << "Enter Truck ID to exit: ";
+            cin >> id;
+            if (garage.isEmpty()) {
+                cout << "Garage is empty!\n";
+            } else if (garage.peek() == id) {
+                garage.pop();
+                cout << "Truck " << id << " exited the garage.\n";
+            } else {
+                cout << "Error: Truck " << id << " is not near the garage door!\n";
+            }
+            break;
+
+        case 4: {
+            string loc;
+            cout << "Enter 'garage' or 'road': ";
+            cin >> loc;
+            if (loc == "garage")
+                garage.display();
+            else if (loc == "road")
+                road.display();
+            else
+                cout << "Invalid input!\n";
+            break;
+        }
+
+        case 5:
+            cout << "Exiting program...\n";
+            break;
+
+        default:
+            cout << "Invalid choice!\n";
+        }
+
+    } while (choice != 5);
+
+    return 0;
+}
