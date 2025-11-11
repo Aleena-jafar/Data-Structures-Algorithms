@@ -1,0 +1,224 @@
+1. Stack Using arrays 
+#include <iostream>
+using namespace std;
+
+class Book {
+public:
+    string title;
+    float price;
+    int edition;
+    int pages;
+    Book* next; // pointer for stack linking
+};
+
+class Stack {
+private:
+    Book* top; // pointer to top of stack
+
+public:
+    Stack() {
+        top = NULL;
+    }
+
+    void push(string t, float p, int e, int pg) {
+        Book* newBook = new Book();
+        newBook->title = t;
+        newBook->price = p;
+        newBook->edition = e;
+        newBook->pages = pg;
+        newBook->next = top;
+        top = newBook;
+        cout << "Book pushed: " << t << endl;
+    }
+
+    void pop() {
+        if (top == NULL) {
+            cout << "Stack is empty! Cannot pop.\n";
+            return;
+        }
+        cout << "Book popped: " << top->title << endl;
+        Book* temp = top;
+        top = top->next;
+        delete temp;
+    }
+
+    void peek() {
+        if (top == NULL) {
+            cout << "Stack is empty!\n";
+            return;
+        }
+        cout << "\nTop Book Details:\n";
+        cout << "Title: " << top->title << endl;
+        cout << "Price: " << top->price << endl;
+        cout << "Edition: " << top->edition << endl;
+        cout << "Pages: " << top->pages << endl;
+    }
+
+    void display() {
+        if (top == NULL) {
+            cout << "Stack is empty!\n";
+            return;
+        }
+        cout << "\nBooks in Stack:\n";
+        Book* temp = top;
+        while (temp != NULL) {
+            cout << "Title: " << temp->title
+                 << ", Price: " << temp->price
+                 << ", Edition: " << temp->edition
+                 << ", Pages: " << temp->pages << endl;
+            temp = temp->next;
+        }
+    }
+};
+
+int main() {
+    Stack s;
+
+    cout << "Pushing 5 books into stack...\n";
+    s.push("Book A", 500, 1, 300);
+    s.push("Book B", 450, 2, 250);
+    s.push("Book C", 600, 3, 400);
+    s.push("Book D", 350, 1, 200);
+    s.push("Book E", 700, 4, 500);
+
+    s.peek(); // find top element
+
+    cout << "\nPopping 2 books...\n";
+    s.pop();
+    s.pop();
+
+    cout << "\nRemaining books in stack:\n";
+    s.display();
+
+    return 0;
+}
+2. Stack Using linkedlist
+#include <iostream>
+using namespace std;
+
+class Inventory {
+private:
+    int serialNum;
+    int manufactYear;
+    int lotNum;
+
+public:
+    Inventory() {
+        serialNum = manufactYear = lotNum = 0;
+    }
+
+    void setData(int s, int y, int l) {
+        serialNum = s;
+        manufactYear = y;
+        lotNum = l;
+    }
+
+    void display() {
+        cout << "Serial Number: " << serialNum
+             << ", Year: " << manufactYear
+             << ", Lot Number: " << lotNum << endl;
+    }
+};
+
+
+class Node {
+public:
+    Inventory data;
+    Node* next;
+};
+
+
+class Stack {
+private:
+    Node* top;
+
+public:
+    Stack() {
+        top = NULL;
+    }
+
+    bool isEmpty() {
+        return top == NULL;
+    }
+
+    void push(Inventory inv) {
+        Node* newNode = new Node();
+        newNode->data = inv;
+        newNode->next = top;
+        top = newNode;
+        cout << "Part added to inventory.\n";
+    }
+
+    void pop() {
+        if (isEmpty()) {
+            cout << "Inventory stack is empty! Nothing to remove.\n";
+            return;
+        }
+
+        Node* temp = top;
+        cout << "\nPart removed from inventory:\n";
+        top->data.display();
+        top = top->next;
+        delete temp;
+    }
+
+    void displayAll() {
+        if (isEmpty()) {
+            cout << "Inventory stack is empty!\n";
+            return;
+        }
+
+        cout << "\nRemaining parts in inventory:\n";
+        Node* temp = top;
+        while (temp != NULL) {
+            temp->data.display();
+            temp = temp->next;
+        }
+    }
+};
+
+
+int main() {
+    Stack inventoryStack;
+    int choice;
+
+    do {
+        cout << "\n=== INVENTORY MENU ===\n";
+        cout << "1. Add a part to inventory (Push)\n";
+        cout << "2. Remove a part from inventory (Pop)\n";
+        cout << "3. Display remaining parts\n";
+        cout << "4. Exit\n";
+        cout << "Enter your choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            int serial, year, lot;
+            cout << "Enter Serial Number: ";
+            cin >> serial;
+            cout << "Enter Manufacturing Year: ";
+            cin >> year;
+            cout << "Enter Lot Number: ";
+            cin >> lot;
+
+            Inventory inv;
+            inv.setData(serial, year, lot);
+            inventoryStack.push(inv);
+        } 
+        else if (choice == 2) {
+            inventoryStack.pop();
+        } 
+        else if (choice == 3) {
+            inventoryStack.displayAll();
+        } 
+        else if (choice == 4) {
+            cout << "\nExiting... Final inventory list:\n";
+            inventoryStack.displayAll();
+        } 
+        else {
+            cout << "Invalid choice! Try again.\n";
+        }
+
+    } while (choice != 4);
+
+    return 0;
+}
