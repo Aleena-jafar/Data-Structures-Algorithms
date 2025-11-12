@@ -1,3 +1,4 @@
+Task 1:
 #include <iostream>
 using namespace std;
 
@@ -144,6 +145,282 @@ int main() {
     cout << "\nDeleting after 45...\n";
     deleteAfter45();
     display();
+
+    return 0;
+}
+Task 2:
+#include <iostream>
+using namespace std;
+
+struct Node {
+    float rainfall;
+    Node* prev;
+    Node* next;
+};
+
+int main() {
+    Node* head = NULL;
+    Node* tail = NULL;
+    float total = 0;
+    int days = 7;
+
+    
+    for (int i = 1; i <= days; i++) {
+        float rain;
+        do {
+            cout << "Enter rainfall for day " << i << ": ";
+            cin >> rain;
+            if (rain < 0)
+                cout << "Invalid! Rainfall cannot be negative.\n";
+        } while (rain < 0);
+
+        
+        Node* newNode = new Node;
+        newNode->rainfall = rain;
+        newNode->next = NULL;
+        newNode->prev = tail;
+
+        if (head == NULL)
+            head = newNode;
+        else
+            tail->next = newNode;
+
+        tail = newNode;
+        total += rain;
+    }
+
+
+    float avg = total / days;
+
+    
+    Node* temp = head;
+    float highest = head->rainfall;
+    float lowest = head->rainfall;
+    int highDay = 1, lowDay = 1, day = 1;
+
+    while (temp != NULL) {
+        if (temp->rainfall > highest) {
+            highest = temp->rainfall;
+            highDay = day;
+        }
+        if (temp->rainfall < lowest) {
+            lowest = temp->rainfall;
+            lowDay = day;
+        }
+        temp = temp->next;
+        day++;
+    }
+
+  
+    cout << "\nTotal rainfall for the week: " << total << endl;
+    cout << "Average weekly rainfall: " << avg << endl;
+    cout << "Day with highest rainfall: Day " << highDay << " (" << highest << ")" << endl;
+    cout << "Day with lowest rainfall: Day " << lowDay << " (" << lowest << ")" << endl;
+
+
+    Node* ptr = head;
+    for (int i = 1; i < 6 && ptr != NULL; i++)
+        ptr = ptr->next;
+
+    if (ptr != NULL)
+        cout << "Rainfall of the day after 5th node (Day 6): " << ptr->rainfall << endl;
+    else
+        cout << "No node exists after 5th day.\n";
+
+    return 0;
+}
+Task 3:
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string name;
+    int score;
+    Node* next;
+    Node* prev;
+};
+
+Node* head = NULL;
+
+void addPlayer(string name, int score) {
+    Node* newNode = new Node;
+    newNode->name = name;
+    newNode->score = score;
+    newNode->next = newNode->prev = NULL;
+
+
+    if (head == NULL) {
+        head = newNode;
+        return;
+    }
+
+
+    if (score < head->score) {
+        newNode->next = head;
+        head->prev = newNode;
+        head = newNode;
+        return;
+    }
+
+   
+    Node* temp = head;
+    while (temp->next != NULL && temp->next->score <= score)
+        temp = temp->next;
+
+    newNode->next = temp->next;
+    newNode->prev = temp;
+
+    if (temp->next != NULL)
+        temp->next->prev = newNode;
+    temp->next = newNode;
+}
+
+void deletePlayer(string name) {
+    if (head == NULL) {
+        cout << "List is empty.\n";
+        return;
+    }
+
+    Node* temp = head;
+
+    while (temp != NULL && temp->name != name)
+        temp = temp->next;
+
+    if (temp == NULL) {
+        cout << "Player not found.\n";
+        return;
+    }
+
+    // If node to delete is head
+    if (temp == head)
+        head = temp->next;
+
+    if (temp->next != NULL)
+        temp->next->prev = temp->prev;
+
+    if (temp->prev != NULL)
+        temp->prev->next = temp->next;
+
+    delete temp;
+    cout << "Player deleted successfully.\n";
+}
+
+
+void displayAll() {
+    if (head == NULL) {
+        cout << "No players in list.\n";
+        return;
+    }
+
+    Node* temp = head;
+    cout << "\nAll Players:\n";
+    while (temp != NULL) {
+        cout << temp->name << " - " << temp->score << endl;
+        temp = temp->next;
+    }
+}
+
+
+void displayLowest() {
+    if (head == NULL) {
+        cout << "No players in list.\n";
+        return;
+    }
+    cout << "\nPlayer with lowest score: " << head->name
+         << " (" << head->score << ")" << endl;
+}
+
+
+void displaySameScore(int s) {
+    Node* temp = head;
+    bool found = false;
+    cout << "\nPlayers with score " << s << ":\n";
+    while (temp != NULL) {
+        if (temp->score == s) {
+            cout << temp->name << endl;
+            found = true;
+        }
+        temp = temp->next;
+    }
+    if (!found)
+        cout << "No players found with that score.\n";
+}
+
+void displayBackward(string name) {
+    Node* temp = head;
+
+ 
+    while (temp != NULL && temp->name != name)
+        temp = temp->next;
+
+    if (temp == NULL) {
+        cout << "Player not found.\n";
+        return;
+    }
+
+    cout << "\nPlayers behind " << name << ":\n";
+    temp = temp->prev;
+
+    if (temp == NULL) {
+        cout << "No players behind.\n";
+        return;
+    }
+
+    while (temp != NULL) {
+        cout << temp->name << " - " << temp->score << endl;
+        temp = temp->prev;
+    }
+}
+
+
+int main() {
+    int choice;
+    do {
+        cout << "\n===== Golf Tournament Menu =====\n";
+        cout << "1. Add New Player\n";
+        cout << "2. Delete Player\n";
+        cout << "3. Display All Players\n";
+        cout << "4. Display Player with Lowest Score\n";
+        cout << "5. Display Players with Same Score\n";
+        cout << "6. Display Backward from a Player\n";
+        cout << "0. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if (choice == 1) {
+            string name;
+            int score;
+            cout << "Enter player name: ";
+            cin >> name;
+            cout << "Enter player score: ";
+            cin >> score;
+            addPlayer(name, score);
+        }
+        else if (choice == 2) {
+            string name;
+            cout << "Enter player name to delete: ";
+            cin >> name;
+            deletePlayer(name);
+        }
+        else if (choice == 3)
+            displayAll();
+        else if (choice == 4)
+            displayLowest();
+        else if (choice == 5) {
+            int s;
+            cout << "Enter score: ";
+            cin >> s;
+            displaySameScore(s);
+        }
+        else if (choice == 6) {
+            string name;
+            cout << "Enter player name: ";
+            cin >> name;
+            displayBackward(name);
+        }
+
+    } while (choice != 0);
 
     return 0;
 }
