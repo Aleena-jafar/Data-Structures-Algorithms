@@ -1,3 +1,4 @@
+Task 1:
 #include <iostream>
 using namespace std;
 
@@ -165,3 +166,89 @@ int main() {
 
     return 0;
 }
+Task 2 :
+#include <iostream>
+using namespace std;
+
+struct Node {
+    float rainfall;
+    Node* prev;
+    Node* next;
+};
+
+int main() {
+    Node* head = NULL;
+    Node* tail = NULL;
+    float total = 0;
+    int days = 7;
+
+   
+    for (int i = 1; i <= days; i++) {
+        float rain;
+        do {
+            cout << "Enter rainfall for day " << i << ": ";
+            cin >> rain;
+            if (rain < 0)
+                cout << "Invalid! Rainfall cannot be negative.\n";
+        } while (rain < 0);
+
+        Node* newNode = new Node;
+        newNode->rainfall = rain;
+        newNode->next = newNode->prev = NULL;
+
+        if (head == NULL) {
+            head = tail = newNode;
+            // circular link for single node
+            head->next = head;
+            head->prev = head;
+        } else {
+       
+            newNode->prev = tail;
+            newNode->next = head; // circular link
+            tail->next = newNode;
+            head->prev = newNode;
+            tail = newNode;
+        }
+
+        total += rain;
+    }
+
+    
+    float avg = total / days;
+
+   
+    Node* temp = head;
+    float highest = head->rainfall;
+    float lowest = head->rainfall;
+    int highDay = 1, lowDay = 1, day = 1;
+
+    
+    do {
+        if (temp->rainfall > highest) {
+            highest = temp->rainfall;
+            highDay = day;
+        }
+        if (temp->rainfall < lowest) {
+            lowest = temp->rainfall;
+            lowDay = day;
+        }
+        temp = temp->next;
+        day++;
+    } while (temp != head);
+
+   
+    cout << "\nTotal rainfall for the week: " << total << endl;
+    cout << "Average weekly rainfall: " << avg << endl;
+    cout << "Day with highest rainfall: Day " << highDay << " (" << highest << ")" << endl;
+    cout << "Day with lowest rainfall: Day " << lowDay << " (" << lowest << ")" << endl;
+
+
+    Node* ptr = head;
+    for (int i = 1; i < 6; i++)
+        ptr = ptr->next; 
+
+    cout << "Rainfall of the day after 5th node (Day 6): " << ptr->rainfall << endl;
+
+    return 0;
+}
+Task 3:
