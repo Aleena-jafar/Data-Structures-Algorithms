@@ -8,12 +8,12 @@ public:
     float price;
     int edition;
     int pages;
-    Book* next; // pointer for stack linking
+    Book* next; 
 };
 
 class Stack {
 private:
-    Book* top; // pointer to top of stack
+    Book* top; 
 
 public:
     Stack() {
